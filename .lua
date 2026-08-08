@@ -74,16 +74,32 @@ local function Cleanup()
 end
 MenuGroup:AddButton("Unload", Cleanup)
 
+local queueTeleport = queue_on_teleport or (syn and syn.queue_on_teleport) or (fluxus and fluxus.queue_on_teleport)
+
 local function FormatWon(value)
     local num = tonumber(value) or 0
     local billions = num / 1e9
     return string.format("%.2f", billions):gsub("%.?0+$", "") .. "B"
 end
 
-local StatsGroup = Tabs.Farm:AddRightGroupbox("Stats")
+-- Берем значения из getgenv(), если они уже были сохранены при прошлом телепорте
+local env = getgenv()
+local spinsBefore = env.SavedSpinsBefore or (lp:GetAttribute("_TotalGuardPowerSpins") or 0)
+local wonBefore = env.SavedWonBefore or (tonumber(lp:GetAttribute("_Won")) or 0)
 
-local spinsBefore = lp:GetAttribute("_TotalGuardPowerSpins") or 0
-local wonBefore = tonumber(lp:GetAttribute("_Won")) or 0
+-- Записываем актуальные значения в глобальное окружение
+env.SavedSpinsBefore = spinsBefore
+env.SavedWonBefore = wonBefore
+
+-- Передаем эти же значения на следующий сервер при телепорте
+if queueTeleport then
+    queueTeleport(string.format([[
+        getgenv().SavedSpinsBefore = %d
+        getgenv().SavedWonBefore = %d
+    ]], spinsBefore, wonBefore))
+end
+
+local StatsGroup = Tabs.Farm:AddRightGroupbox("Stats")
 
 local spinsLabel = StatsGroup:AddLabel("Power Rolls: " .. spinsBefore .. " -> " .. spinsBefore .. " (+0)")
 local wonLabel = StatsGroup:AddLabel("Won: " .. FormatWon(wonBefore) .. " -> " .. FormatWon(wonBefore) .. " (+0B)")
@@ -95,16 +111,29 @@ local function UpdateStats()
     local spinsDiff = spinsNow - spinsBefore
     local wonDiff = wonNow - wonBefore
 
-    spinsLabel:SetText("Power Rolls: " .. spinsBefore .. " -> " .. spinsNow .. " (+" .. (spinsNow - spinsBefore) .. ")")
+    spinsLabel:SetText("Power Rolls: " .. spinsBefore .. " -> " .. spinsNow .. " (+" .. spinsDiff .. ")")
     wonLabel:SetText("Won: " .. FormatWon(wonBefore) .. " -> " .. FormatWon(wonNow) .. " (+" .. FormatWon(wonDiff) .. ")")
 end
 
 lp:GetAttributeChangedSignal("_TotalGuardPowerSpins"):Connect(UpdateStats)
 lp:GetAttributeChangedSignal("_Won"):Connect(UpdateStats)
 
+UpdateStats()
+
 StatsGroup:AddButton("Reset Stats", function()
     spinsBefore = lp:GetAttribute("_TotalGuardPowerSpins") or 0
     wonBefore = tonumber(lp:GetAttribute("_Won")) or 0
+    
+    env.SavedSpinsBefore = spinsBefore
+    env.SavedWonBefore = wonBefore
+
+    if queueTeleport then
+        queueTeleport(string.format([[
+            getgenv().SavedSpinsBefore = %d
+            getgenv().SavedWonBefore = %d
+        ]], spinsBefore, wonBefore))
+    end
+
     UpdateStats()
     Library:Notify("Stats reset!", 2)
 end)
