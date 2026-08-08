@@ -91,8 +91,8 @@ FarmGroup:AddButton({
     Func = function()
         _G.AutofarmEnabled = true
         Library:Notify("Autofarm started!", 2)
-        queue_on_teleport("_G.AutofarmEnabled = true; loadstring(game:HttpGet('https://raw.githubusercontent.com/vfx-qudsa/asfsadasdasdasdsa/refs/heads/main/.lua'))()")
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/vfx-qудса/asfsadasdasdasdsa/refs/heads/main/.lua"))()
+        queue_on_teleport("_G.AutofarmEnabled = true; loadstring(game:HttpGet('https://raw.githubusercontent.com/vfx-qудса/newguiauto/refs/heads/main/.lua'))()")
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/vfx-qудса/newauto/refs/heads/main/.lua"))()
     end
 })
 
