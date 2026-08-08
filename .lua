@@ -74,20 +74,24 @@ local function Cleanup()
 end
 MenuGroup:AddButton("Unload", Cleanup)
 
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+
 local StatsGroup = Tabs.Farm:AddRightGroupbox("Stats")
 
 local spinsBefore = LocalPlayer:GetAttribute("_TotalGuardPowerSpins") or 0
 local wonBefore = LocalPlayer:GetAttribute("_Won") or 0
 
-local spinsLabel = StatsGroup:AddLabel("Power Rolls: " .. spinsBefore .. " → " .. spinsBefore)
-local wonLabel = StatsGroup:AddLabel("Won: " .. wonBefore .. " → " .. wonBefore)
+local spinsLabel = StatsGroup:AddLabel("Power Rolls: " .. spinsBefore .. " -> " .. spinsBefore .. " (+0)")
+local wonLabel = StatsGroup:AddLabel("Won: " .. wonBefore .. " -> " .. wonBefore .. " (+0)")
 
 RunService.Heartbeat:Connect(function()
     local spinsNow = LocalPlayer:GetAttribute("_TotalGuardPowerSpins") or 0
     local wonNow = LocalPlayer:GetAttribute("_Won") or 0
 
-    spinsLabel:SetText("Power Rolls: " .. spinsBefore .. " → " .. spinsNow .. " (+" .. (spinsNow - spinsBefore) .. ")")
-    wonLabel:SetText("Won: " .. wonBefore .. " → " .. wonNow .. " (+" .. (wonNow - wonBefore) .. ")")
+    spinsLabel:SetText("Power Rolls: " .. spinsBefore .. " -> " .. spinsNow .. " (+" .. (spinsNow - spinsBefore) .. ")")
+    wonLabel:SetText("Won: " .. wonBefore .. " -> " .. wonNow .. " (+" .. (wonNow - wonBefore) .. ")")
 end)
 
 StatsGroup:AddButton("Reset Stats", function()
@@ -95,7 +99,6 @@ StatsGroup:AddButton("Reset Stats", function()
     wonBefore = LocalPlayer:GetAttribute("_Won") or 0
     Library:Notify("Stats reset!", 2)
 end)
-
 
 
 local FarmGroup = Tabs.Farm:AddLeftGroupbox("Autofarm", "play")
