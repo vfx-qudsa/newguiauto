@@ -74,20 +74,39 @@ local function Cleanup()
 end
 MenuGroup:AddButton("Unload", Cleanup)
 
+-- Функция для красивого форматирования чисел (1.5B, 250M и т.д.)
+local function FormatNumber(num)
+    if type(num) ~= "number" then return "0" end
+    if num >= 1e12 then
+        return string.format("%.2fT", num / 1e12)
+    elseif num >= 1e9 then
+        return string.format("%.2fB", num / 1e9)
+    elseif num >= 1e6 then
+        return string.format("%.2fM", num / 1e6)
+    elseif num >= 1e3 then
+        return string.format("%.2fK", num / 1e3)
+    else
+        return tostring(num)
+    end
+end
+
 local StatsGroup = Tabs.Farm:AddRightGroupbox("Stats")
 
 local spinsBefore = lp:GetAttribute("_TotalGuardPowerSpins") or 0
 local wonBefore = lp:GetAttribute("_Won") or 0
 
-local spinsLabel = StatsGroup:AddLabel("Power Rolls: " .. spinsBefore .. " -> " .. spinsBefore .. " (+0)")
-local wonLabel = StatsGroup:AddLabel("Won: " .. wonBefore .. " -> " .. wonBefore .. " (+0)")
+local spinsLabel = StatsGroup:AddLabel("Power Rolls: " .. FormatNumber(spinsBefore) .. " -> " .. FormatNumber(spinsBefore) .. " (+0)")
+local wonLabel = StatsGroup:AddLabel("Won: " .. FormatNumber(wonBefore) .. " -> " .. FormatNumber(wonBefore) .. " (+0)")
 
 local function UpdateStats()
     local spinsNow = lp:GetAttribute("_TotalGuardPowerSpins") or 0
     local wonNow = lp:GetAttribute("_Won") or 0
 
-    spinsLabel:SetText("Power Rolls: " .. spinsBefore .. " -> " .. spinsNow .. " (+" .. (spinsNow - spinsBefore) .. ")")
-    wonLabel:SetText("Won: " .. wonBefore .. " -> " .. wonNow .. " (+" .. (wonNow - wonBefore) .. ")")
+    local spinsDiff = spinsNow - spinsBefore
+    local wonDiff = wonNow - wonBefore
+
+    spinsLabel:SetText("Power Rolls: " .. FormatNumber(spinsBefore) .. " -> " .. FormatNumber(spinsNow) .. " (+" .. FormatNumber(spinsDiff) .. ")")
+    wonLabel:SetText("Won: " .. FormatNumber(wonBefore) .. " -> " .. FormatNumber(wonNow) .. " (+" .. FormatNumber(wonDiff) .. ")")
 end
 
 lp:GetAttributeChangedSignal("_TotalGuardPowerSpins"):Connect(UpdateStats)
