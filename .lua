@@ -9,6 +9,8 @@ if CoreGui:FindFirstChild("Crazy Diamond") then
     return 
 end
 
+_G.AutofarmEnabled = false
+
 local repo = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
 local Library = loadstring(game:HttpGet(repo .. "Library.lua"))()
 local ThemeManager = loadstring(game:HttpGet(repo .. "addons/ThemeManager.lua"))()
