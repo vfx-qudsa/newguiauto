@@ -1,4 +1,3 @@
-queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/vfx-qudsa/newguiauto/refs/heads/main/.lua'))()")
 
 local RunService = game:GetService("RunService")
 local Stats = game:GetService("Stats")
