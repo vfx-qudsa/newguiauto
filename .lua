@@ -83,19 +83,13 @@ local function Cleanup()
 end
 
 MenuGroup:AddButton("Unload", Cleanup)
-
 local FarmGroup = Tabs.Farm:AddLeftGroupbox("Autofarm", "play")
 
-FarmGroup:AddButton({
-    Text = 'Start Autofarm',
-    Func = function()
-        _G.AutofarmEnabled = true
-        Library:Notify("Autofarm started!", 2)
-        pcall(function()
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/vfx-qudsa/newauto/refs/heads/main/.lua"))()
-        end)
-    end
-})
+FarmGroup:AddButton("Start Autofarm", function()
+    _G.AutofarmEnabled = true
+    Library:Notify("Autofarm started!", 2)
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/vfx-qudsa/newauto/refs/heads/main/.lua"))()
+end)
 
 ThemeManager:SetLibrary(Library)
 SaveManager:SetLibrary(Library)
