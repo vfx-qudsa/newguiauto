@@ -74,19 +74,11 @@ local function Cleanup()
 end
 MenuGroup:AddButton("Unload", Cleanup)
 
-local function FormatNumber(value)
+local function FormatWon(value)
     if typeof(value) ~= "number" then return "0" end
-    if value >= 1e12 then
-        return string.format("%.2fT", value / 1e12)
-    elseif value >= 1e9 then
-        return string.format("%.2fB", value / 1e9)
-    elseif value >= 1e6 then
-        return string.format("%.2fM", value / 1e6)
-    elseif value >= 1e3 then
-        return string.format("%.2fK", value / 1e3)
-    else
-        return tostring(value)
-    end
+    -- Перевод в миллиарды с убиранием лишних нулей в конце (например, 2.58B вместо 2.580B)
+    local billions = value / 1e9
+    return string.format("%.2f", billions):gsub("%.?0+$", "") .. "B"
 end
 
 local StatsGroup = Tabs.Farm:AddRightGroupbox("Stats")
@@ -94,8 +86,8 @@ local StatsGroup = Tabs.Farm:AddRightGroupbox("Stats")
 local spinsBefore = lp:GetAttribute("_TotalGuardPowerSpins") or 0
 local wonBefore = lp:GetAttribute("_Won") or 0
 
-local spinsLabel = StatsGroup:AddLabel("Power Rolls: " .. FormatNumber(spinsBefore) .. " -> " .. FormatNumber(spinsBefore) .. " (+0)")
-local wonLabel = StatsGroup:AddLabel("Won: " .. FormatNumber(wonBefore) .. " -> " .. FormatNumber(wonBefore) .. " (+0)")
+local spinsLabel = StatsGroup:AddLabel("Power Rolls: " .. spinsBefore .. " -> " .. spinsBefore .. " (+0)")
+local wonLabel = StatsGroup:AddLabel("Won: " .. FormatWon(wonBefore) .. " -> " .. FormatWon(wonBefore) .. " (+0B)")
 
 local function UpdateStats()
     local spinsNow = lp:GetAttribute("_TotalGuardPowerSpins") or 0
@@ -104,8 +96,8 @@ local function UpdateStats()
     local spinsDiff = spinsNow - spinsBefore
     local wonDiff = wonNow - wonBefore
 
-    spinsLabel:SetText("Power Rolls: " .. FormatNumber(spinsBefore) .. " -> " .. FormatNumber(spinsNow) .. " (+" .. FormatNumber(spinsDiff) .. ")")
-    wonLabel:SetText("Won: " .. FormatNumber(wonBefore) .. " -> " .. FormatNumber(wonNow) .. " (+" .. FormatNumber(wonDiff) .. ")")
+    spinsLabel:SetText("Power Rolls: " .. spinsBefore .. " -> " .. spinsNow .. " (+" .. spinsDiff .. ")")
+    wonLabel:SetText("Won: " .. FormatWon(wonBefore) .. " -> " .. FormatWon(wonNow) .. " (+" .. FormatWon(wonDiff) .. ")")
 end
 
 lp:GetAttributeChangedSignal("_TotalGuardPowerSpins"):Connect(UpdateStats)
