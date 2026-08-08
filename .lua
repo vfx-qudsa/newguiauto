@@ -91,7 +91,9 @@ FarmGroup:AddButton({
     Func = function()
         _G.AutofarmEnabled = true
         Library:Notify("Autofarm started!", 2)
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/vfx-qudsa/newauto/refs/heads/main/.lua"))()
+        pcall(function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/vfx-qudsa/newauto/refs/heads/main/.lua"))()
+        end)
     end
 })
 
