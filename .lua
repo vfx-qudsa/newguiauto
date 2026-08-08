@@ -74,19 +74,18 @@ local function Cleanup()
 end
 MenuGroup:AddButton("Unload", Cleanup)
 
--- Функция для красивого форматирования чисел (1.5B, 250M и т.д.)
-local function FormatNumber(num)
-    if type(num) ~= "number" then return "0" end
-    if num >= 1e12 then
-        return string.format("%.2fT", num / 1e12)
-    elseif num >= 1e9 then
-        return string.format("%.2fB", num / 1e9)
-    elseif num >= 1e6 then
-        return string.format("%.2fM", num / 1e6)
-    elseif num >= 1e3 then
-        return string.format("%.2fK", num / 1e3)
+local function FormatNumber(value)
+    if typeof(value) ~= "number" then return "0" end
+    if value >= 1e12 then
+        return string.format("%.2fT", value / 1e12)
+    elseif value >= 1e9 then
+        return string.format("%.2fB", value / 1e9)
+    elseif value >= 1e6 then
+        return string.format("%.2fM", value / 1e6)
+    elseif value >= 1e3 then
+        return string.format("%.2fK", value / 1e3)
     else
-        return tostring(num)
+        return tostring(value)
     end
 end
 
