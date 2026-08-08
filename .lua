@@ -75,28 +75,27 @@ end
 MenuGroup:AddButton("Unload", Cleanup)
 
 local function FormatWon(value)
-    if typeof(value) ~= "number" then return "0" end
-    -- Перевод в миллиарды с убиранием лишних нулей в конце (например, 2.58B вместо 2.580B)
-    local billions = value / 1e9
+    local num = tonumber(value) or 0
+    local billions = num / 1e9
     return string.format("%.2f", billions):gsub("%.?0+$", "") .. "B"
 end
 
 local StatsGroup = Tabs.Farm:AddRightGroupbox("Stats")
 
 local spinsBefore = lp:GetAttribute("_TotalGuardPowerSpins") or 0
-local wonBefore = lp:GetAttribute("_Won") or 0
+local wonBefore = tonumber(lp:GetAttribute("_Won")) or 0
 
 local spinsLabel = StatsGroup:AddLabel("Power Rolls: " .. spinsBefore .. " -> " .. spinsBefore .. " (+0)")
 local wonLabel = StatsGroup:AddLabel("Won: " .. FormatWon(wonBefore) .. " -> " .. FormatWon(wonBefore) .. " (+0B)")
 
 local function UpdateStats()
     local spinsNow = lp:GetAttribute("_TotalGuardPowerSpins") or 0
-    local wonNow = lp:GetAttribute("_Won") or 0
+    local wonNow = tonumber(lp:GetAttribute("_Won")) or 0
 
     local spinsDiff = spinsNow - spinsBefore
     local wonDiff = wonNow - wonBefore
 
-    spinsLabel:SetText("Power Rolls: " .. spinsBefore .. " -> " .. spinsNow .. " (+" .. spinsDiff .. ")")
+    spinsLabel:SetText("Power Rolls: " .. spinsBefore .. " -> " .. spinsNow .. " (+" .. (spinsNow - spinsBefore) .. ")")
     wonLabel:SetText("Won: " .. FormatWon(wonBefore) .. " -> " .. FormatWon(wonNow) .. " (+" .. FormatWon(wonDiff) .. ")")
 end
 
@@ -105,7 +104,7 @@ lp:GetAttributeChangedSignal("_Won"):Connect(UpdateStats)
 
 StatsGroup:AddButton("Reset Stats", function()
     spinsBefore = lp:GetAttribute("_TotalGuardPowerSpins") or 0
-    wonBefore = lp:GetAttribute("_Won") or 0
+    wonBefore = tonumber(lp:GetAttribute("_Won")) or 0
     UpdateStats()
     Library:Notify("Stats reset!", 2)
 end)
