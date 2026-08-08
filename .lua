@@ -74,8 +74,7 @@ local function Cleanup()
 end
 MenuGroup:AddButton("Unload", Cleanup)
 
-
-local StatsGroup = Tabs.Farm:AddRightGroupbox("Stats")
+local StatsGroup = Tabs.Farm:AddLeftGroupbox("Stats", "play")
 
 local spinsBefore = LocalPlayer:GetAttribute("_TotalGuardPowerSpins") or 0
 local wonBefore = LocalPlayer:GetAttribute("_Won") or 0
