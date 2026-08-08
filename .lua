@@ -73,12 +73,39 @@ local function Cleanup()
     Library:Unload()
 end
 MenuGroup:AddButton("Unload", Cleanup)
+
+
+local StatsGroup = Tabs.Farm:AddRightGroupbox("Stats")
+
+local spinsBefore = LocalPlayer:GetAttribute("_TotalGuardPowerSpins") or 0
+local wonBefore = LocalPlayer:GetAttribute("_Won") or 0
+
+local spinsLabel = StatsGroup:AddLabel("Power Rolls: " .. spinsBefore .. " → " .. spinsBefore)
+local wonLabel = StatsGroup:AddLabel("Won: " .. wonBefore .. " → " .. wonBefore)
+
+RunService.Heartbeat:Connect(function()
+    local spinsNow = LocalPlayer:GetAttribute("_TotalGuardPowerSpins") or 0
+    local wonNow = LocalPlayer:GetAttribute("_Won") or 0
+
+    spinsLabel:SetText("Power Rolls: " .. spinsBefore .. " → " .. spinsNow .. " (+" .. (spinsNow - spinsBefore) .. ")")
+    wonLabel:SetText("Won: " .. wonBefore .. " → " .. wonNow .. " (+" .. (wonNow - wonBefore) .. ")")
+end)
+
+StatsGroup:AddButton("Reset Stats", function()
+    spinsBefore = LocalPlayer:GetAttribute("_TotalGuardPowerSpins") or 0
+    wonBefore = LocalPlayer:GetAttribute("_Won") or 0
+    Library:Notify("Stats reset!", 2)
+end)
+
+
+
 local FarmGroup = Tabs.Farm:AddLeftGroupbox("Autofarm", "play")
 FarmGroup:AddButton("Start Autofarm", function()
     _G.AutofarmEnabled = true
     Library:Notify("Autofarm started!", 2)
     loadstring(game:HttpGet("https://raw.githubusercontent.com/vfx-qudsa/newauto/refs/heads/main/.lua"))()
 end)
+
 ThemeManager:SetLibrary(Library)
 SaveManager:SetLibrary(Library)
 SaveManager:IgnoreThemeSettings()
