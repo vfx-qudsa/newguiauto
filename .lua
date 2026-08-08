@@ -88,6 +88,7 @@ local FarmGroup = Tabs.Farm:AddLeftGroupbox("Autofarm", "play")
 FarmGroup:AddButton("Start Autofarm", function()
     _G.AutofarmEnabled = true
     Library:Notify("Autofarm started!", 2)
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/vfx-qudsa/newauto/refs/heads/main/.lua"))()
 end)
 
 ThemeManager:SetLibrary(Library)
