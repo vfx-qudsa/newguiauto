@@ -74,44 +74,30 @@ local function Cleanup()
 end
 MenuGroup:AddButton("Unload", Cleanup)
 
-local Players = game:GetService("Players")
-
--- Безопасное получение игрока
-local player = Players.LocalPlayer
-if not player then
-    player = Players:GetPropertyChangedSignal("LocalPlayer"):Wait() or Players.LocalPlayer
-end
-
 local StatsGroup = Tabs.Farm:AddRightGroupbox("Stats")
 
-local spinsBefore = player:GetAttribute("_TotalGuardPowerSpins") or 0
-local wonBefore = player:GetAttribute("_Won") or 0
+local spinsBefore = lp:GetAttribute("_TotalGuardPowerSpins") or 0
+local wonBefore = lp:GetAttribute("_Won") or 0
 
 local spinsLabel = StatsGroup:AddLabel("Power Rolls: " .. spinsBefore .. " -> " .. spinsBefore .. " (+0)")
 local wonLabel = StatsGroup:AddLabel("Won: " .. wonBefore .. " -> " .. wonBefore .. " (+0)")
 
 local function UpdateStats()
-    local currentPlayer = Players.LocalPlayer
-    if not currentPlayer then return end
-
-    local spinsNow = currentPlayer:GetAttribute("_TotalGuardPowerSpins") or 0
-    local wonNow = currentPlayer:GetAttribute("_Won") or 0
+    local spinsNow = lp:GetAttribute("_TotalGuardPowerSpins") or 0
+    local wonNow = lp:GetAttribute("_Won") or 0
 
     spinsLabel:SetText("Power Rolls: " .. spinsBefore .. " -> " .. spinsNow .. " (+" .. (spinsNow - spinsBefore) .. ")")
     wonLabel:SetText("Won: " .. wonBefore .. " -> " .. wonNow .. " (+" .. (wonNow - wonBefore) .. ")")
 end
 
-player:GetAttributeChangedSignal("_TotalGuardPowerSpins"):Connect(UpdateStats)
-player:GetAttributeChangedSignal("_Won"):Connect(UpdateStats)
+lp:GetAttributeChangedSignal("_TotalGuardPowerSpins"):Connect(UpdateStats)
+lp:GetAttributeChangedSignal("_Won"):Connect(UpdateStats)
 
 StatsGroup:AddButton("Reset Stats", function()
-    local currentPlayer = Players.LocalPlayer
-    if currentPlayer then
-        spinsBefore = currentPlayer:GetAttribute("_TotalGuardPowerSpins") or 0
-        wonBefore = currentPlayer:GetAttribute("_Won") or 0
-        UpdateStats()
-        Library:Notify("Stats reset!", 2)
-    end
+    spinsBefore = lp:GetAttribute("_TotalGuardPowerSpins") or 0
+    wonBefore = lp:GetAttribute("_Won") or 0
+    UpdateStats()
+    Library:Notify("Stats reset!", 2)
 end)
 
 local FarmGroup = Tabs.Farm:AddLeftGroupbox("Autofarm", "play")
