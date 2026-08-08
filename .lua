@@ -75,8 +75,9 @@ end
 MenuGroup:AddButton("Unload", Cleanup)
 
 local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local LocalPlayer = Players.LocalPlayer
+local LocalPlayer = Players.LocalPlayer or Players:GetService("Players").PlayerAdded:Wait()
+
+if not LocalPlayer then return end
 
 local StatsGroup = Tabs.Farm:AddRightGroupbox("Stats")
 
@@ -86,17 +87,22 @@ local wonBefore = LocalPlayer:GetAttribute("_Won") or 0
 local spinsLabel = StatsGroup:AddLabel("Power Rolls: " .. spinsBefore .. " -> " .. spinsBefore .. " (+0)")
 local wonLabel = StatsGroup:AddLabel("Won: " .. wonBefore .. " -> " .. wonBefore .. " (+0)")
 
-RunService.Heartbeat:Connect(function()
+local function UpdateStats()
     local spinsNow = LocalPlayer:GetAttribute("_TotalGuardPowerSpins") or 0
     local wonNow = LocalPlayer:GetAttribute("_Won") or 0
 
     spinsLabel:SetText("Power Rolls: " .. spinsBefore .. " -> " .. spinsNow .. " (+" .. (spinsNow - spinsBefore) .. ")")
     wonLabel:SetText("Won: " .. wonBefore .. " -> " .. wonNow .. " (+" .. (wonNow - wonBefore) .. ")")
-end)
+end
+
+-- Обновляем счетчики только при их изменении (не нагружает FPS)
+LocalPlayer:GetAttributeChangedSignal("_TotalGuardPowerSpins"):Connect(UpdateStats)
+LocalPlayer:GetAttributeChangedSignal("_Won"):Connect(UpdateStats)
 
 StatsGroup:AddButton("Reset Stats", function()
     spinsBefore = LocalPlayer:GetAttribute("_TotalGuardPowerSpins") or 0
     wonBefore = LocalPlayer:GetAttribute("_Won") or 0
+    UpdateStats()
     Library:Notify("Stats reset!", 2)
 end)
 
