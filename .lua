@@ -1,3 +1,5 @@
+queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/vfx-qudsa/newguiauto/refs/heads/main/.lua'))()")
+
 local RunService = game:GetService("RunService")
 local Stats = game:GetService("Stats")
 local Players = game:GetService("Players")
@@ -8,8 +10,6 @@ local lp = Players.LocalPlayer
 if CoreGui:FindFirstChild("Crazy Diamond") then 
     return 
 end
-
-_G.AutofarmEnabled = false
 
 local repo = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
 local Library = loadstring(game:HttpGet(repo .. "Library.lua"))()
@@ -91,15 +91,7 @@ FarmGroup:AddButton({
     Func = function()
         _G.AutofarmEnabled = true
         Library:Notify("Autofarm started!", 2)
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/vfx-qudsa/newauto/refs/heads/main/.lua"))()
-    end
-})
-
-FarmGroup:AddButton({
-    Text = 'Stop Autofarm',
-    Func = function()
-        _G.AutofarmEnabled = false
-        Library:Notify("Autofarm stopped!", 2)
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/vfx-qudsa/asfsadasdasdasdsa/refs/heads/main/.lua"))()
     end
 })
 
